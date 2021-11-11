@@ -15,15 +15,15 @@ VALUES
   ("Editor-In-Chief", 250000, 2),
   ("Junior Editor", 95000, 2);
 
--- INSERT INTO employees (first_name, last_name, role_id)
--- VALUES
---   ('Monica', 'Bellucci', 6),
---   ('Rebecca', 'Johnson', 1),
---   ('John', 'Dryden', 2),
---   ('Alexander', 'Poppins', 7),
---   ('Lionel', 'Rivers', 4),
---   ('Aubrey', 'Hepburn', 3),
---   ('Tulse', 'Luper', 4),
---   ('Jonathan', 'Morris', 7),
---   ('George', 'Shaw', 5),
---   ('Amanda', 'Bennett', 2);
+INSERT INTO employees (first_name, last_name, role_id)
+VALUES
+  ('Monica', 'Bellucci', 6),
+  ('Rebecca', 'Johnson', 1),
+  ('John', 'Dryden', 2),
+  ('Alexander', 'Poppins', 7),
+  ('Lionel', 'Rivers', 4),
+  ('Aubrey', 'Hepburn', 3),
+  ('Tulse', 'Luper', 4),
+  ('Jonathan', 'Morris', 7),
+  ('George', 'Shaw', 5),
+  ('Amanda', 'Bennett', 2);
