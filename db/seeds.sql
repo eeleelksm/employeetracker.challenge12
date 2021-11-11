@@ -27,3 +27,11 @@ VALUES
   ('Jonathan', 'Morris', 7),
   ('George', 'Shaw', 5),
   ('Amanda', 'Bennett', 2);
+
+UPDATE employees
+SET employees.manager_id = 1
+WHERE employees.role_id = 3 OR employees.role_id = 7;
+
+UPDATE employees
+SET employees.manager_id = 5
+WHERE employees.role_id = 4;
