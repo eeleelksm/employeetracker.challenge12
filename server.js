@@ -1,50 +1,49 @@
 const inquirer = require("inquirer");
-const db = require("./db/connection");
 const figlet = require("figlet");
+const consoleTable = require("console.table");
+const connection = require("./db/connection");
 
-// const appHeader = () => {
-//   figlet.text('My Employee Tracker', {
-//     font: 'banner',
-//     horizontalLayout: 'default',
-//     verticalLayout: 'fitted',
-//     width: 80,
-//     whitespaceBreak: true
-//   }, function(err, data) {
-//     if (err) {
-//         console.log('Something went wrong...');
-//         console.dir(err);
-//         return;
-//     }
-//     console.log(data);
-//   });
-// };
+connection.connect((err) => {
+  if (err) throw err;
+  console.log(figlet.textSync("Employee Tracker", "banner"));
+  employeeTracker();
+});
+
 
 const employeeTracker = () => {
-  console.log(`
-  Business Employee Tracker
-  =========================
-  `)
 
   inquirer.prompt([
-      {
-        type:"list",
-        name: "choices",
-        message: "What would you like to do?",
-        choices: [
-          "View All Departments",
-          "View All Roles",
-          "View All Employees",
-          "Add a Department",
-          "Add a Role",
-          "Add an Employee",
-          "Update an Employee Role"
-        ]
-      }
-    ]);  
-}
-
-function startApp() {
-  employeeTracker();
+    {
+      type:"list",
+      name: "choices",
+      message: "What would you like to do?",
+      choices: [
+        "View All Departments",
+        "View All Roles",
+        "View All Employees",
+        "Add a Department",
+        "Add a Role",
+        "Add an Employee",
+        "Update an Employee Role",
+        "Exit Employee Tracker"
+      ]
+    }
+  ]) 
+  .then((userPick) => {
+    const { choices } = userPick;
+    if (choices === "View All Departments") {
+      viewAllDepartments();
+    }
+  })
 };
 
-startApp();
+const viewAllDepartments = () => {
+  const sql = `SELECT * FROM departments`;
+  connection.query(sql, (err, res) => {
+    if (err) throw err;
+    console.table("All Departments: ", res);
+    employeeTracker();
+  })
+};
+
+
