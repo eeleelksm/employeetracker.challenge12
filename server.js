@@ -16,7 +16,7 @@ const employeeTracker = () => {
     {
       type:"list",
       name: "choices",
-      message: "What would you like to do?",
+      message: "Please select from the following options:",
       choices: [
         "View All Departments",
         "View All Roles",
@@ -61,7 +61,10 @@ const viewAllDepartments = () => {
 
 // View all Roles
 const viewAllRoles = () => { 
-  const sql = `SELECT roles.id AS ID, roles.title AS Title, departments.name AS Department
+  const sql = `SELECT roles.id AS ID,
+               roles.title AS Title, 
+               roles.salary AS Salary,
+               departments.name AS Department
                FROM roles
                LEFT JOIN departments ON roles.department_id = departments.id`;
   connection.query(sql, (err, res) => {
