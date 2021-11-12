@@ -2,13 +2,14 @@ const inquirer = require("inquirer");
 const figlet = require("figlet");
 const consoleTable = require("console.table");
 const connection = require("./db/connection");
+const { connect } = require("./db/connection");
 
+// Connect with database and display application header
 connection.connect((err) => {
   if (err) throw err;
   console.log(figlet.textSync("Employee Tracker", "banner"));
   employeeTracker();
 });
-
 
 const employeeTracker = () => {
 
@@ -39,6 +40,12 @@ const employeeTracker = () => {
     }
     if (choices === "View All Employees") {
       viewAllEmployees();
+    }
+    if (choices === "Add a Department") {
+      addDepartment();
+    }
+    if (choices === "Exit Employee Tracker") {
+      connection.end();
     }
   })
 };
@@ -78,7 +85,7 @@ const viewAllRoles = () => {
     employeeTracker();
   });
 };
-//               JOIN departments ON roles.department_id = departments.id
+
 // View all Employees
 const viewAllEmployees = () => { 
   const sql = `SELECT employees.id AS ID,
@@ -104,3 +111,34 @@ const viewAllEmployees = () => {
   });
 };
 
+// Add a Department
+const addDepartment = () => {
+  inquirer.prompt([
+    {
+      type:"input",
+      name:'addDept',
+      message: "What is the name of the Department you'd like to add?",
+      validate: addDept => {
+        if (addDept) {
+          return true;
+        } else {
+          console.log("Please enter the name of the Department you'd like to add.");
+          return false;
+        }
+      }
+    }
+  ])
+  .then(answer => {
+    const sql = `INSERT INTO departments (name) VALUES (?)`;
+    connection.query(sql, answer.addDept, (err, res) => {
+      if (err) throw err;
+      console.log(answer.addDept + " has been added to Departments.");
+      viewAllDepartments();
+    });
+  });
+}
+
+// Add a Role
+const addRole = () => {
+
+};
