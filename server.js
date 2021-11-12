@@ -34,16 +34,27 @@ const employeeTracker = () => {
     if (choices === "View All Departments") {
       viewAllDepartments();
     }
+    if (choices === "View All Roles") {
+      viewAllRoles();
+    }
   })
 };
 
-const viewAllDepartments = () => {
+///////////////////////// SQL Table Functions ////////////////////////////
+
+// View all Departments
+const viewAllDepartments = () => { 
   const sql = `SELECT * FROM departments`;
   connection.query(sql, (err, res) => {
     if (err) throw err;
-    console.table("All Departments: ", res);
+    console.log("----------------  All Departments  ----------------");
+    console.table(res);
+    console.log("---------------------------------------------------");
     employeeTracker();
-  })
+  });
 };
+
+// View all Roles
+
 
 
