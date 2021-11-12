@@ -37,6 +37,9 @@ const employeeTracker = () => {
     if (choices === "View All Roles") {
       viewAllRoles();
     }
+    if (choices === "View All Employees") {
+      viewAllRoles();
+    }
   })
 };
 
@@ -44,10 +47,12 @@ const employeeTracker = () => {
 
 // View all Departments
 const viewAllDepartments = () => { 
-  const sql = `SELECT * FROM departments`;
+  const sql = `SELECT departments.id AS ID, departments.name AS Department FROM departments`;
   connection.query(sql, (err, res) => {
     if (err) throw err;
+    console.log("")
     console.log("----------------  All Departments  ----------------");
+    console.log("")
     console.table(res);
     console.log("---------------------------------------------------");
     employeeTracker();
@@ -55,6 +60,34 @@ const viewAllDepartments = () => {
 };
 
 // View all Roles
+const viewAllRoles = () => { 
+  const sql = `SELECT roles.id AS ID, roles.title AS Title, departments.name AS Department
+               FROM roles
+               LEFT JOIN departments ON roles.department_id = departments.id`;
+  connection.query(sql, (err, res) => {
+    if (err) throw err;
+    console.log("")
+    console.log("-------------------  All Roles  -------------------");
+    console.log("")
+    console.table(res);
+    console.log("---------------------------------------------------");
+    employeeTracker();
+  });
+};
 
-
+// View all Employees
+const viewAllEmployees = () => { 
+  const sql = `SELECT roles.id AS ID, roles.title AS Title, departments.name AS Department
+               FROM roles
+               LEFT JOIN departments ON roles.department_id = departments.id`;
+  connection.query(sql, (err, res) => {
+    if (err) throw err;
+    console.log("")
+    console.log("-------------------  All Roles  -------------------");
+    console.log("")
+    console.table(res);
+    console.log("---------------------------------------------------");
+    employeeTracker();
+  });
+};
 
