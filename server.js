@@ -146,7 +146,7 @@ const addRole = () => {
   inquirer.prompt([
     {
       type:"input",
-      name:'roleName',
+      name:'role',
       message: "What is the name of the Role you'd like to add?",
       validate: roleName => {
         if (roleName) {
@@ -159,7 +159,7 @@ const addRole = () => {
     },
     {
       type:"input",
-      name:'roleSalary',
+      name:'salary',
       message: "What is the salary of the Role you'd like to add?",
       validate: roleSalary => {
         if (roleSalary) {
@@ -172,28 +172,34 @@ const addRole = () => {
     }
   ])
   .then(answer => {
-    const params = [answer.roleName, answer.roleSalary];
+    const params = [answer.role, answer.salary];
 
     // pull information from the departments table
-    const sqlRole = `SELECT name, id FROM departments`;
+    const sqlRole = `SELECT departments.name, departments.id FROM departments`;
 
     connection.query(sqlRole, (err, data) => {
       if (err) throw err;
 
+      // variable for the department choices
+      const pickDept = data.map(({ name, id }) => ({ name: name, value: id }));
+
       inquirer.prompt([
         {
           type:"list",
-          name:'choicesDept',
+          name:'pickDept',
           message: "What Department is this role in?",
-          choices: sqlRole
+          choices: pickDept
         }
       ])
       .then(chooseDept => {
+        params.push(chooseDept.pickDept);
+
         const sql = `INSERT INTO roles (title, salary, department_id)
                       VALUES (?,?,?)`;
-        connection.query(sql, (err, res) => {
+
+        connection.query(sql, params, (err, res) => {
           if (err) throw err;
-          console.log("The new role, "+ answer.roleName + ", has been added");
+          console.log("The new role, "+ answer.role + ", has been added");
           viewAllRoles();
         })
       })
