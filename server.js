@@ -47,6 +47,9 @@ const employeeTracker = () => {
     if (choices === "Add a Role") {
       addRole();
     }
+    if (choices === "Add an Employee") {
+      addEmployee();
+    }
     if (choices === "Exit Employee Tracker") {
       connection.end();
     }
@@ -206,3 +209,8 @@ const addRole = () => {
     });
   });
 };
+
+// Add a Employee
+const addEmployee = () => {
+
+}
