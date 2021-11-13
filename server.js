@@ -44,6 +44,9 @@ const employeeTracker = () => {
     if (choices === "Add a Department") {
       addDepartment();
     }
+    if (choices === "Add a Role") {
+      addRole();
+    }
     if (choices === "Exit Employee Tracker") {
       connection.end();
     }
@@ -140,5 +143,53 @@ const addDepartment = () => {
 
 // Add a Role
 const addRole = () => {
+  inquirer.prompt([
+    {
+      type:"input",
+      name:'roleName',
+      message: "What is the name of the Role you'd like to add?",
+      validate: roleName => {
+        if (roleName) {
+          return true;
+        } else {
+          console.log("Please enter the name of the Role you'd like to add.");
+          return false;
+        }
+      }
+    },
+    {
+      type:"input",
+      name:'roleSalary',
+      message: "What is the salary of the Role you'd like to add?",
+      validate: roleSalary => {
+        if (roleSalary) {
+          return true;
+        } else {
+          console.log("Please enter the Salary of the Role.");
+          return false;
+        }
+      }
+    }
+  ])
+    .then(answer => {
+      const params = [answer.roleName, answer.roleSalary];
 
+      // pull information from the departments table
+      const sqlRole = `SELECT name, id FROM departments`;
+
+      connection.query(sqlRole, (err, data) => {
+        if (err) throw err;
+
+        inquirer.prompt([
+          {
+            type:"list",
+            name:'choicesDept',
+            message: "What Department is this role in?",
+            choices: sqlRole
+          }
+        ])
+        .then(choiceDept => {
+        })
+      });
+  });
 };
