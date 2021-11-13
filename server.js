@@ -171,25 +171,32 @@ const addRole = () => {
       }
     }
   ])
-    .then(answer => {
-      const params = [answer.roleName, answer.roleSalary];
+  .then(answer => {
+    const params = [answer.roleName, answer.roleSalary];
 
-      // pull information from the departments table
-      const sqlRole = `SELECT name, id FROM departments`;
+    // pull information from the departments table
+    const sqlRole = `SELECT name, id FROM departments`;
 
-      connection.query(sqlRole, (err, data) => {
-        if (err) throw err;
+    connection.query(sqlRole, (err, data) => {
+      if (err) throw err;
 
-        inquirer.prompt([
-          {
-            type:"list",
-            name:'choicesDept',
-            message: "What Department is this role in?",
-            choices: sqlRole
-          }
-        ])
-        .then(choiceDept => {
+      inquirer.prompt([
+        {
+          type:"list",
+          name:'choicesDept',
+          message: "What Department is this role in?",
+          choices: sqlRole
+        }
+      ])
+      .then(chooseDept => {
+        const sql = `INSERT INTO roles (title, salary, department_id)
+                      VALUES (?,?,?)`;
+        connection.query(sql, (err, res) => {
+          if (err) throw err;
+          console.log("The new role, "+ answer.roleName + ", has been added");
+          viewAllRoles();
         })
-      });
+      })
+    });
   });
 };
