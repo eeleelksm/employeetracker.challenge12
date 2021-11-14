@@ -178,9 +178,9 @@ const addRole = () => {
     const params = [answer.role, answer.salary];
 
     // pull information from the departments table
-    const sqlRole = `SELECT departments.name, departments.id FROM departments`;
+    const sqlDept = `SELECT departments.name, departments.id FROM departments`;
 
-    connection.query(sqlRole, (err, data) => {
+    connection.query(sqlDept, (err, data) => {
       if (err) throw err;
 
       // variable for the department choices
@@ -212,5 +212,68 @@ const addRole = () => {
 
 // Add a Employee
 const addEmployee = () => {
+  inquirer.prompt([
+    {
+      type:"input",
+      name:'firstname',
+      message: "What is the first name of the employee?",
+      validate: employeeFirstName => {
+        if (employeeFirstName) {
+          return true;
+        } else {
+          console.log("Please enter the first name of the employee.");
+          return false;
+        }
+      }
+    },
+    {
+      type:"input",
+      name:'lastname',
+      message: "What is the last name of the employee?",
+      validate: employeeLastName => {
+        if (employeeLastName) {
+          return true;
+        } else {
+          console.log("Please enter the last name of the employee.");
+          return false;
+        }
+      }
+    }
+  ])
+  .then(answer => {
+    const params = [answer.firstname, answer.lastname];
 
+    // pull information from the roles table
+    const sqlRole = `SELECT roles.title, roles.id FROM roles`;
+
+    connection.query(sqlRole, (err, data) => {
+      if (err) throw err;
+
+      // variable for the department choices
+      const pickRole = data.map(({ title, id }) => ({ name: title, value: id }));
+
+      inquirer.prompt([
+        {
+          type:"list",
+          name:'pickRole',
+          message: "What is the employee's role?",
+          choices: pickRole
+        }
+      ])
+      .then(chooseRole => {
+        params.push(chooseRole.pickRole);
+        const sqlManager = `SELECT * FROM employees`;
+        connection.query(sqlManager, (err, res) => {
+          if (err) throw err;
+          const pickManager = data.map(({ id, first_name, last_name}) => ({ name: first_name + " " + last_name}))
+        const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                      VALUES (?,?,?,?)`;
+
+        connection.query(sql, params, (err, res) => {
+          if (err) throw err;
+          console.log("The new role, "+ answer.role + ", has been added");
+          viewAllRoles();
+        })
+      })
+    });
 }
