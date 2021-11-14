@@ -262,18 +262,35 @@ const addEmployee = () => {
       ])
       .then(chooseRole => {
         params.push(chooseRole.pickRole);
-        const sqlManager = `SELECT * FROM employees`;
+
+        const sqlManager = `SELECT employees.first_name, employees.last_name FROM employees`;
+
         connection.query(sqlManager, (err, res) => {
           if (err) throw err;
-          const pickManager = data.map(({ id, first_name, last_name}) => ({ name: first_name + " " + last_name}))
-        const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+          const pickManager = data.map(({ id, first_name, last_name}) => ({ name: first_name + " " + last_name, value: id }));
+        
+          inquirer.prompt([
+            {
+              type:"list",
+              name:'pickManager',
+              message: "Who is the employee's manager?",
+              choices: pickManager
+            }
+          ])
+          .then(chooseManager => {
+            params.push(chooseManager.pickManager);
+
+            const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
                       VALUES (?,?,?,?)`;
 
-        connection.query(sql, params, (err, res) => {
-          if (err) throw err;
-          console.log("The new role, "+ answer.role + ", has been added");
-          viewAllRoles();
-        })
-      })
+            connection.query(sql, params, (err, res) => {
+              if (err) throw err;
+              console.log("The new employee has been added");
+              viewAllEmployees();
+            })
+          })
+        });   
+      });
     });
-}
+  });
+};
