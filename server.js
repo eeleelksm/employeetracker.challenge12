@@ -263,9 +263,9 @@ const addEmployee = () => {
       .then(chooseRole => {
         params.push(chooseRole.pickRole);
 
-        const sqlManager = `SELECT employees.first_name, employees.last_name FROM employees`;
+        const sqlManager = `SELECT * FROM employees`;
 
-        connection.query(sqlManager, (err, res) => {
+        connection.query(sqlManager, (err, data) => {
           if (err) throw err;
           const pickManager = data.map(({ id, first_name, last_name}) => ({ name: first_name + " " + last_name, value: id }));
         
@@ -280,7 +280,7 @@ const addEmployee = () => {
           .then(chooseManager => {
             params.push(chooseManager.pickManager);
 
-            const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+            const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)
                       VALUES (?,?,?,?)`;
 
             connection.query(sql, params, (err, res) => {
