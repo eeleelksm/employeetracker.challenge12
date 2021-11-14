@@ -3,6 +3,7 @@ const figlet = require("figlet");
 const consoleTable = require("console.table");
 const connection = require("./db/connection");
 const { connect } = require("./db/connection");
+const { forEach } = require("lodash");
 
 // Connect with database and display application header
 connection.connect((err) => {
@@ -49,6 +50,9 @@ const employeeTracker = () => {
     }
     if (choices === "Add an Employee") {
       addEmployee();
+    }
+    if (choices === "Update an Employee Role") {
+      updateEmployRole();
     }
     if (choices === "Exit Employee Tracker") {
       connection.end();
@@ -104,7 +108,7 @@ const viewAllEmployees = () => {
                FROM employees
                LEFT JOIN roles ON employees.role_id = roles.id
                LEFT JOIN departments ON roles.department_id = departments.id
-               LEFT JOIN employees manager on employees.manager_id = manager.id`;
+               LEFT JOIN employees manager on employees.manager_id = manager.id;`;
                
   connection.query(sql, (err, res) => {
     if (err) throw err;
@@ -142,7 +146,7 @@ const addDepartment = () => {
       viewAllDepartments();
     });
   });
-}
+};
 
 // Add a Role
 const addRole = () => {
@@ -178,7 +182,7 @@ const addRole = () => {
     const params = [answer.role, answer.salary];
 
     // pull information from the departments table
-    const sqlDept = `SELECT departments.name, departments.id FROM departments`;
+    const sqlDept = `SELECT departments.name, departments.id FROM departments;`;
 
     connection.query(sqlDept, (err, data) => {
       if (err) throw err;
@@ -198,7 +202,7 @@ const addRole = () => {
         params.push(chooseDept.pickDept);
 
         const sql = `INSERT INTO roles (title, salary, department_id)
-                      VALUES (?,?,?)`;
+                      VALUES (?,?,?);`;
 
         connection.query(sql, params, (err, res) => {
           if (err) throw err;
@@ -281,11 +285,11 @@ const addEmployee = () => {
             params.push(chooseManager.pickManager);
 
             const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)
-                      VALUES (?,?,?,?)`;
+                      VALUES (?,?,?,?);`;
 
             connection.query(sql, params, (err, res) => {
               if (err) throw err;
-              console.log("The new employee has been added");
+              console.log("The new employee has been added.");
               viewAllEmployees();
             })
           })
@@ -293,4 +297,37 @@ const addEmployee = () => {
       });
     });
   });
+};
+
+const updateEmployRole = () => {
+  const sql = `SELECT employees.id AS ID,
+               employees.first_name AS First_Name,
+               employees.last_name AS Last_Name,
+               departments.name AS Department,
+               roles.title AS Title,
+               FROM employees
+               LEFT JOIN roles ON employees.role_id = roles.id
+               LEFT JOIN departments ON roles.department_id = departments.id;`;
+
+  // pull information from the roles table
+  connection.query(sqlRole, (err, res) => {
+    if (err) throw err;
+    const sqlRole = `SELECT roles.title, roles.id FROM roles`; 
+    rolesArray = [];
+    response.forEach((roles) => rolesArray.push(role.title));
+
+    connection.query(sql, (err, res) => {
+    if (err) throw err;
+      employeesArray = [];
+      reponse.forEach((employees) => employeesArray.push(`${employees.first_name} ${employees.last_name}`));
+
+      inquirer.prompt([
+        {
+          type:"list",
+          name:'pickRole',
+          message: "What is the employee's role?",
+          choices: pickRole
+        }
+      ])
+    });
 };
