@@ -302,8 +302,9 @@ const addEmployee = () => {
 const updateEmployRole = () => {
   const sql = `SELECT employees.id, employees.first_name, employees.last_name, employees.role_id
                FROM employees
-               JOIN roles ON employees.role_id = roles.id
-               JOIN departments ON roles.department_id = departments.id;`;
+               LEFT JOIN roles ON employees.role_id = roles.id
+               LEFT JOIN departments ON roles.department_id = departments.id
+               LEFT JOIN employees manager on employees.manager_id = manager.id;`;
  
   const sqlRole = `SELECT roles.title, roles.id FROM roles`; 
   
