@@ -308,10 +308,10 @@ const updateEmployRole = () => {
  
   const sqlRole = `SELECT roles.title, roles.id FROM roles`; 
   
-  connection.query(sqlRole, (err, res) => {
+  connection.query(sqlRole, (err, roleRes) => {
     if (err) throw err;
     rolesArray = [];
-    res.forEach((roles) => rolesArray.push(roles.title));
+    roleRes.forEach((roles) => rolesArray.push(roles.title));
 
     connection.query(sql, (err, res) => {
     if (err) throw err;
@@ -333,24 +333,27 @@ const updateEmployRole = () => {
         }
       ])
       .then(answer => {
-        let newRole;
-        let Employee;
+        let newRoleId, employeeId;
+        let employeePick = answer.pickEmployee;
 
-        res.forEach((employees) => {
-          if (answer.pickEmployee === `${employees.first_name} ${employees.last_name}`) {
-            Employee = employees.id;
+        res.forEach((employees) => {          
+          if (employeePick.includes(`${employees.first_name} ${employees.last_name}`)) {
+            employeeId = employees.id;
+          }
+        });
+        console.log(roleRes);
+
+        roleRes.forEach((roles) => { 
+          console.log(answer.pickNewRole, roles.title);
+          if (answer.pickNewRole.includes(roles.title)) {
+            newRoleId = roles.id;
           }
         });
 
-        res.forEach((roles) => {
-          if (answer.pickNewRole === roles.title) {
-            newRole = roles.id;
-          }
-        });
-
+        console.log(newRoleId, employeeId)
         const sqlNewRole = `UPDATE employees SET employees.role_id = ? WHERE employees.id = ?`;
         
-        connection.query(sqlNewRole, [newRole, Employee], (err) => {
+        connection.query(sqlNewRole, [newRoleId, employeeId], (err) => {
           if (err) throw err;
           console.log("The employee's role has been updated.");
           viewAllEmployees();
@@ -359,3 +362,4 @@ const updateEmployRole = () => {
     });
   });
 };
+
