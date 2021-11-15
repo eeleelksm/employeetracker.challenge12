@@ -2,8 +2,6 @@ const inquirer = require("inquirer");
 const figlet = require("figlet");
 const consoleTable = require("console.table");
 const connection = require("./db/connection");
-const { connect } = require("./db/connection");
-const { forEach } = require("lodash");
 
 // Connect with database and display application header
 connection.connect((err) => {
@@ -308,11 +306,13 @@ const updateEmployRole = () => {
  
   const sqlRole = `SELECT roles.title, roles.id FROM roles`; 
   
+  // pushing the role titles into an array
   connection.query(sqlRole, (err, roleRes) => {
     if (err) throw err;
     rolesArray = [];
     roleRes.forEach((roles) => rolesArray.push(roles.title));
 
+    // pushing the employee first and last names into an array
     connection.query(sql, (err, res) => {
     if (err) throw err;
       employeesArray = [];
@@ -336,21 +336,21 @@ const updateEmployRole = () => {
         let newRoleId, employeeId;
         let employeePick = answer.pickEmployee;
 
+        // If the employee chosen from the array is matched, put that employee id into a new variable 
         res.forEach((employees) => {          
           if (employeePick.includes(`${employees.first_name} ${employees.last_name}`)) {
             employeeId = employees.id;
           }
         });
-        console.log(roleRes);
 
+        // If the new role chosen from the array is matched, put that role id into a new variable 
         roleRes.forEach((roles) => { 
-          console.log(answer.pickNewRole, roles.title);
           if (answer.pickNewRole.includes(roles.title)) {
             newRoleId = roles.id;
           }
         });
 
-        console.log(newRoleId, employeeId)
+        // update the selected employee's role title
         const sqlNewRole = `UPDATE employees SET employees.role_id = ? WHERE employees.id = ?`;
         
         connection.query(sqlNewRole, [newRoleId, employeeId], (err) => {
